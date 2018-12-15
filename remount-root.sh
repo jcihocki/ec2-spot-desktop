@@ -33,5 +33,5 @@ done
 exec chroot . /sbin/init
 EOF
    chmod +x /sbin/init
-   shutdown -r now
+   (sleep 10 && reboot) & 
 fi
