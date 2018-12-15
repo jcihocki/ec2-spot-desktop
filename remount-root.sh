@@ -1,5 +1,6 @@
 DEVICE=/dev/$(ls -l /dev/disk/by-label|grep permaroot|cut -d / -f 3)
 echo "Will use ${DEVICE} as persistent chroot"
+umount ${DEVICE}
 NEWMNT=/permaroot
 OLDMNT=old-root
 e2fsck $DEVICE -f -y
@@ -19,6 +20,8 @@ then
 #!/bin/sh
 mount $DEVICE $NEWMNT
 [ ! -d $NEWMNT/$OLDMNT ] && mkdir -p $NEWMNT/$OLDMNT
+   
+# TODO add any ssh pubkeys here   
    
 cd $NEWMNT
 pivot_root . ./$OLDMNT
