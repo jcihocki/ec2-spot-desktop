@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while ! test -f "/var/lib/cloud/instances/$1"; do
+while ! test -d "/var/lib/cloud/instances/$1"; do
 
   sleep 10
   echo "Still waiting"
