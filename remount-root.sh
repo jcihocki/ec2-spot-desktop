@@ -2,6 +2,7 @@ if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
   exit 0
 fi
 
+bash setup.sh
 
 DEVICE=/dev/$(ls -l /dev/disk/by-label|grep permaroot|cut -d / -f 3)
 echo "Will use ${DEVICE} as persistent chroot"
