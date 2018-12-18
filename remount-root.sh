@@ -1,5 +1,8 @@
-if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
-  exit 0
+ROOT_LABEL="$(findmnt / -o label -n)"
+if [ $ROOT_LABEL == "permaroot" ]; then 
+	exit 0 
+else 
+	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot" 
 fi
 
 bash setup.sh
