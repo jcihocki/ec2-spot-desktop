@@ -6,5 +6,14 @@ while ! test -d "/var/lib/cloud/instances/$1"; do
 done
 
 # Fire off SQS msg and reboot
+while : ; do
 
-nohup bash -c "sleep 15 && reboot" &
+  echo "Trying to say hello world to the desktop mgmt infra..."  > /dev/stderr
+  STATUSCODE=$(curl --silent --output /dev/null --write-out "%{http_code}" -X POST https://dev.remotewarriors.work/running-instances)
+  if [ $STATUSCODE -eq 204 ]; then break; fi
+  echo "Failed, http status is $STATUSCODE" > /dev/stderr
+  sleep 15
+done
+
+
+nohup bash -c "sleep 2 && reboot" &
