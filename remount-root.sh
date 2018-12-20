@@ -18,18 +18,7 @@ e2fsck $DEVICE -f -y
 tune2fs $DEVICE -U `uuidgen`
 mkdir -p $NEWMNT
 
-#
-# point of no return... 
-# modify /sbin/init on the ephemeral volume to chain-load from the persistent EBS volume, and then reboot.
-#
-if [ -L "/sbin/init" ]
-then
-   mv /sbin/init /sbin/init.backup
-   cat >/sbin/init <<EOF
-#!/bin/sh
 mount $DEVICE $NEWMNT
-
-
 if [ ! -f $NEWMNT/etc/openvpn/server.key ]; then 
 	# Generate new openvpn keys and certs, this is a new desktop
 	git clone https://github.com/jcihocki/openvpn-server-conf.git
@@ -40,6 +29,18 @@ if [ ! -f $NEWMNT/etc/openvpn/server.key ]; then
 	cp /etc/openvpn/server.conf /etc/openvpn/ca.crt /etc/openvpn/ca.key /etc/openvpn/ta.key /etc/openvpn/crl.pem /etc/openvpn/server.crt /etc/openvpn/server.key /etc/openvpn/dh.key $NEWMNT/etc/openvpn/
 	cp client.ovpn $NEWMNT/home/ubuntu/
 fi
+umount $DEVICE
+
+#
+# point of no return... 
+# modify /sbin/init on the ephemeral volume to chain-load from the persistent EBS volume, and then reboot.
+#
+if [ -L "/sbin/init" ]
+then
+   mv /sbin/init /sbin/init.backup
+   cat >/sbin/init <<EOF
+#!/bin/sh
+mount $DEVICE $NEWMNT
 
 [ ! -d $NEWMNT/$OLDMNT ] && mkdir -p $NEWMNT/$OLDMNT
 
