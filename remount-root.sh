@@ -5,8 +5,6 @@ else
 	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot" 
 fi
 
-bash setup.sh
-
 DEVICE=/dev/$(ls -l /dev/disk/by-label|grep permaroot|cut -d / -f 3)
 echo "Will use ${DEVICE} as persistent chroot"
 umount ${DEVICE}
