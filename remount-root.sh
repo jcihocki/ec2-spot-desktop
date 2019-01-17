@@ -47,6 +47,7 @@ mount $DEVICE $NEWMNT
 # TODO add any ssh pubkeys here   
    
 cd $NEWMNT
+unshare -m
 pivot_root . ./$OLDMNT
    
 for dir in /dev /proc /sys /run; do
