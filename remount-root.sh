@@ -27,6 +27,7 @@ if [ ! -f $NEWMNT/etc/openvpn/server.key ]; then
 	cp /etc/openvpn/server.conf /etc/openvpn/ca.crt /etc/openvpn/ca.key /etc/openvpn/ta.key /etc/openvpn/crl.pem /etc/openvpn/server.crt /etc/openvpn/server.key /etc/openvpn/dh.key $NEWMNT/etc/openvpn/
 	cp client.ovpn $NEWMNT/home/ubuntu/
 fi
+cp /etc/hostname $NEWMNT/etc/hostname
 umount $DEVICE
 
 #
