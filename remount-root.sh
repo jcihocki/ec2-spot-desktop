@@ -19,16 +19,16 @@ mkdir -p $NEWMNT
 
 
 mount $DEVICE $NEWMNT
-if [ ! -f $NEWMNT/etc/openvpn/server.key ]; then 
-	# Generate new openvpn keys and certs, this is a new desktop
-	git clone https://github.com/jcihocki/openvpn-server-conf.git
-        cd openvpn-server-conf
-	bash server-setup.sh
-
-	cd ..
-	cp /etc/openvpn/server.conf /etc/openvpn/ca.crt /etc/openvpn/ca.key /etc/openvpn/ta.key /etc/openvpn/crl.pem /etc/openvpn/server.crt /etc/openvpn/server.key /etc/openvpn/dh.key $NEWMNT/etc/openvpn/
-	cp client.ovpn $NEWMNT/home/ubuntu/
-fi
+# if [ ! -f $NEWMNT/etc/openvpn/server.key ]; then
+#   # Generate new openvpn keys and certs, this is a new desktop
+#   git clone https://github.com/jcihocki/openvpn-server-conf.git
+#         cd openvpn-server-conf
+#   bash server-setup.sh
+#
+#   cd ..
+#   cp /etc/openvpn/server.conf /etc/openvpn/ca.crt /etc/openvpn/ca.key /etc/openvpn/ta.key /etc/openvpn/crl.pem /etc/openvpn/server.crt /etc/openvpn/server.key /etc/openvpn/dh.key $NEWMNT/etc/openvpn/
+#   cp client.ovpn $NEWMNT/home/ubuntu/
+# fi
 cp /etc/hostname $NEWMNT/etc/hostname
 mkdir -p $NEWMNT/$OLDMNT
 umount $DEVICE
