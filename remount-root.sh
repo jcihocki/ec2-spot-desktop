@@ -46,17 +46,19 @@ if [[ $INSTANCE_TYPE == m5* || $INSTANCE_TYPE == r5* ]]; then
   
    cat >/sbin/init <<EOF
 #!/bin/sh
-/bin/mount $DEVICE $NEWMNT 
+mount $DEVICE $NEWMNT 
 echo "JOHNNY Path is \$PATH" > /dev/kmsg
 echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" > /dev/kmsg
 cd $NEWMNT
+echo "JOHNNY mount point $NEWMNT: $(ls)" > /dev/kmsg
 
-unshare -m 2> /tmp/unshare-error.txt
-echo "Unshare error: " > /dev/kmsg
-cat /tmp/unshare-error.txt > /dev/kmsg
-pivot_root . ./$OLDMNT
+unshare -m
+echo "Unshare exit status: \$?" > /dev/kmsg
+pivot_root . ./$OLDMNT 2> /tmp/pivot-root-error.txt
 PIVOT_STATUS=\$?
 echo "JOHNNY Pivot root status: \$PIVOT_STATUS Mount status: \$(mount)" > /dev/kmsg
+cat /tmp/pivot-root-error.txt > /dev/kmsg
+
 if [ "\$PIVOT_STATUS" = "0" ]; then 
   for dir in /dev /proc /sys /run; do
      echo "JOHNNY Moving mounted file system ${OLDMNT}\${dir} to \$dir." > /dev/kmsg
