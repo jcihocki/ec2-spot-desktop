@@ -48,8 +48,8 @@ if [[ $INSTANCE_TYPE == m5* || $INSTANCE_TYPE == r5* ]]; then
 #!/bin/sh
 mount UUID=1cfa1016-7031-4558-b400-ee9552836b04 /permaroot
 echo "JOHNNY Path is \$PATH" > /dev/kmsg
-echo "JOHNNY Proved /tmp is writeable" > /tmp/test
-cat /tmp/test > /dev/kmsg
+echo "JOHNNY Proved /run is writeable" > /run/test
+cat /run/test > /dev/kmsg
 echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" > /dev/kmsg
 cd $NEWMNT
 echo "JOHNNY mount point $NEWMNT: \$(ls $NEWMNT)" > /dev/kmsg
