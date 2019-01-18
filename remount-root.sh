@@ -54,6 +54,13 @@ echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which 
 cd $NEWMNT
 echo "JOHNNY mount point $NEWMNT: \$(ls $NEWMNT)" > /dev/kmsg
 
+if [ -f $NEWMNT/sbin/init ]; then
+  echo "Mounting permaroot was successful" > /dev/kmsg
+else 
+  echo "Mounting permaroot was not successful" > /dev/kmsg
+  exec /sbin/init.backup
+fi
+
 sleep 15
 
 pivot_root . ./$OLDMNT 2> /tmp/pivot-root-error.txt
