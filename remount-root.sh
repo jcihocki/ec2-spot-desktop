@@ -55,9 +55,25 @@ echo "JOHNNY mount point $NEWMNT: \$(ls)" > /dev/kmsg
 unshare -m
 echo "Unshare exit status: \$?" > /dev/kmsg
 pivot_root . ./$OLDMNT 2> /tmp/pivot-root-error.txt
+
+
 PIVOT_STATUS=\$?
 echo "JOHNNY Pivot root status: \$PIVOT_STATUS Mount status: \$(mount)" > /dev/kmsg
 cat /tmp/pivot-root-error.txt > /dev/kmsg
+
+if [ -f /old-root/sbin/init.backup ]; then
+  # pivot root worked.
+  echo "JOHNNY pivot root worked" > /dev/kmsg  
+  
+  # Undo
+  pivot_root /old-root /old-root/permaroot
+  
+  echo "JOHNNY pivot root back exited with \$?" > /dev/kmsg  
+else 
+  echo "JOHNNY pivot root didn't work" > /dev/kmsg  
+fi
+
+exec /sbin/init.backup
 
 if [ "\$PIVOT_STATUS" = "0" ]; then 
   for dir in /dev /proc /sys /run; do
