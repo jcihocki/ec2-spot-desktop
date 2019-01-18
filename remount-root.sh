@@ -47,40 +47,40 @@ if [[ $INSTANCE_TYPE == m5* || $INSTANCE_TYPE == r5* ]]; then
    cat >/sbin/init <<EOF
 #!/bin/sh
 mount UUID=1cfa1016-7031-4558-b400-ee9552836b04 /permaroot
-echo "JOHNNY Path is \$PATH" > /dev/kmsg
-echo "JOHNNY Proved /run is writeable" > /run/test
-cat /run/test > /dev/kmsg
-echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" > /dev/kmsg
+
+echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" >> /run/johnny.log
 cd $NEWMNT
-echo "JOHNNY mount point $NEWMNT: \$(ls $NEWMNT)" > /dev/kmsg
+echo "JOHNNY mount point $NEWMNT: \$(ls $NEWMNT)" >> /run/johnny.log
 
 if [ -f $NEWMNT/sbin/init ]; then
-  echo "Mounting permaroot was successful" > /dev/kmsg
+  echo "JOHNNY Mounting permaroot was successful" >> /run/johnny.log
 else 
-  echo "Mounting permaroot was not successful" > /dev/kmsg
+  echo "JOHNNY Mounting permaroot was not successful" >> /run/johnny.log
   exec /sbin/init.backup
 fi
 
 sleep 15
 
-pivot_root . ./$OLDMNT 2> /tmp/pivot-root-error.txt
+pivot_root . ./$OLDMNT 2> /run/pivot-root-error.txt
 
 PIVOT_STATUS=\$?
-echo "JOHNNY Pivot root status: \$PIVOT_STATUS Mount status: \$(mount)" > /dev/kmsg
-cat /tmp/pivot-root-error.txt > /dev/kmsg
+echo "JOHNNY Pivot root status: \$PIVOT_STATUS Mount status: \$(mount)" >> /run/johnny.log
+cat /run/pivot-root-error.txt >> /run/johnny.log
 
 if [ -f /old-root/sbin/init.backup ]; then
   # pivot root worked.
-  echo "JOHNNY pivot root worked" > /dev/kmsg  
+  echo "JOHNNY pivot root worked" >> /run/johnny.log 
   
   # Undo
   pivot_root /old-root /old-root/permaroot
   
-  echo "JOHNNY pivot root back exited with \$?" > /dev/kmsg  
+  echo "JOHNNY pivot root back exited with \$?" >> /run/johnny.log
 else 
-  echo "JOHNNY pivot root didn't work" > /dev/kmsg  
+  echo "JOHNNY pivot root didn't work" >> /run/johnny.log
 fi
 
+
+echo "JOHNNY booting normally phew" >> /run/johnny.log
 exec /sbin/init.backup
 
 if [ "\$PIVOT_STATUS" = "0" ]; then 
