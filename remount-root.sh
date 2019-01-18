@@ -14,7 +14,7 @@ OLDMNT=old-root
 e2fsck $DEVICE -f -y
 # This has already happened by now
 # e2label $DEVICE permaroot
-tune2fs $DEVICE -U `uuidgen`
+#tune2fs $DEVICE -U `uuidgen`
 mkdir -p $NEWMNT
 
 
