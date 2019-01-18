@@ -40,7 +40,9 @@ umount $DEVICE
 mv /sbin/init /sbin/init.backup
 if [[ $INSTANCE_TYPE == m5* || $INSTANCE_TYPE == r5* ]]; then
   
-  
+  # Jan 18 20:38:45 ip-10-0-5-152 kernel: [    6.697871] JOHNNY Path is /sbin:/usr/sbin:/bin:/usr/bin
+  # Jan 18 20:38:45 ip-10-0-5-152 kernel: [    6.707010] JOHNNY Mount: /bin/mount Unshare: /usr/bin/unshare chroot: /usr/sbin/chroot pivot_root: /sbin/pivot_root
+  # Jan 18 20:38:45 ip-10-0-5-152 kernel: [    6.711831] JOHNNY had to bail out of chroot for some reason. Check kernel logs
   
    cat >/sbin/init <<EOF
 #!/bin/sh
@@ -49,20 +51,21 @@ echo "JOHNNY Path is \$PATH" > /dev/kmsg
 echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" > /dev/kmsg
 cd $NEWMNT
 
-if [ -f /bin/unshare ]; then 
-  /bin/unshare -m
-  /sbin/pivot_root . ./$OLDMNT
-  PIVOT_STATUS=\$?
-  echo "JOHNNY Pivot root status: \$PIVOT_STATUS Mount status: \$(mount)" > /dev/kmsg
-  if [ "\$PIVOT_STATUS" = "0" ]; then 
-    for dir in /dev /proc /sys /run; do
-       echo "JOHNNY Moving mounted file system ${OLDMNT}\${dir} to \$dir." > /dev/kmsg
-       mount --move ./${OLDMNT}\${dir} \${dir}
-    done
+unshare -m 2> /tmp/unshare-error.txt
+echo "Unshare error: " > /dev/kmsg
+cat /tmp/unshare-error.txt > /dev/kmsg
+pivot_root . ./$OLDMNT
+PIVOT_STATUS=\$?
+echo "JOHNNY Pivot root status: \$PIVOT_STATUS Mount status: \$(mount)" > /dev/kmsg
+if [ "\$PIVOT_STATUS" = "0" ]; then 
+  for dir in /dev /proc /sys /run; do
+     echo "JOHNNY Moving mounted file system ${OLDMNT}\${dir} to \$dir." > /dev/kmsg
+     mount --move ./${OLDMNT}\${dir} \${dir}
+  done
 
-    exec chroot . /sbin/init
-  fi
+  exec chroot . /sbin/init
 fi
+
 echo "JOHNNY had to bail out of chroot for some reason. Check kernel logs" > /dev/kmsg
 exec /sbin/init.backup
 EOF
