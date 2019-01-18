@@ -47,7 +47,7 @@ if [[ $INSTANCE_TYPE == m5* || $INSTANCE_TYPE == r5* ]]; then
    cat >/sbin/init <<EOF
 #!/bin/sh
 mount UUID=1cfa1016-7031-4558-b400-ee9552836b04 /permaroot
-
+touch /run/johnny.log
 echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" >> /run/johnny.log
 cd $NEWMNT
 echo "JOHNNY mount point $NEWMNT: \$(ls $NEWMNT)" >> /run/johnny.log
@@ -81,6 +81,8 @@ fi
 
 
 echo "JOHNNY booting normally phew" >> /run/johnny.log
+
+cat /run/johnny.log > /dev/kmsg
 exec /sbin/init.backup
 
 if [ "\$PIVOT_STATUS" = "0" ]; then 
