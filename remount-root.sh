@@ -50,7 +50,7 @@ mount $DEVICE $NEWMNT
 echo "JOHNNY Path is \$PATH" > /dev/kmsg
 echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" > /dev/kmsg
 cd $NEWMNT
-echo "JOHNNY mount point $NEWMNT: $(ls)" > /dev/kmsg
+echo "JOHNNY mount point $NEWMNT: \$(ls)" > /dev/kmsg
 
 unshare -m
 echo "Unshare exit status: \$?" > /dev/kmsg
