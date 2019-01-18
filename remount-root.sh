@@ -46,17 +46,17 @@ if [[ $INSTANCE_TYPE == m5* || $INSTANCE_TYPE == r5* ]]; then
   
    cat >/sbin/init <<EOF
 #!/bin/sh
-mount $DEVICE $NEWMNT 
+mount UUID=1cfa1016-7031-4558-b400-ee9552836b04 /permaroot
 echo "JOHNNY Path is \$PATH" > /dev/kmsg
-echo "JOHNNY systemd args are \$@" > /dev/kmsg
+echo "JOHNNY Proved /tmp is writeable" > /tmp/test
+cat /tmp/test > /dev/kmsg
 echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" > /dev/kmsg
 cd $NEWMNT
-echo "JOHNNY mount point $NEWMNT: \$(ls)" > /dev/kmsg
+echo "JOHNNY mount point $NEWMNT: \$(ls $NEWMNT)" > /dev/kmsg
 
-unshare -m
-echo "Unshare exit status: \$?" > /dev/kmsg
+sleep 15
+
 pivot_root . ./$OLDMNT 2> /tmp/pivot-root-error.txt
-
 
 PIVOT_STATUS=\$?
 echo "JOHNNY Pivot root status: \$PIVOT_STATUS Mount status: \$(mount)" > /dev/kmsg
