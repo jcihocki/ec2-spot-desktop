@@ -48,6 +48,7 @@ if [[ $INSTANCE_TYPE == m5* || $INSTANCE_TYPE == r5* ]]; then
 #!/bin/sh
 mount $DEVICE $NEWMNT 
 echo "JOHNNY Path is \$PATH" > /dev/kmsg
+echo "JOHNNY systemd args are \$@" > /dev/kmsg
 echo "JOHNNY Mount: \$(which mount) Unshare: \$(which unshare) chroot: \$(which chroot) pivot_root: \$(which pivot_root)" > /dev/kmsg
 cd $NEWMNT
 echo "JOHNNY mount point $NEWMNT: \$(ls)" > /dev/kmsg
