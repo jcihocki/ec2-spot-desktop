@@ -5,6 +5,8 @@ else
 	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot" 
 fi
 
+apt install -y nodejs
+
 DEVICE=/dev/$(ls -l /dev/disk/by-label|grep permaroot|cut -d / -f 3)
 DEVICE_UUID=$(blkid -o value -s UUID $DEVICE)
 INSTANCE_TYPE=$(curl http://169.254.169.254/latest/meta-data/instance-type)
@@ -32,7 +34,7 @@ cp /etc/hostname $NEWMNT/etc/hostname
 ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
 REGION=${ZONE::-1}
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
-PASSWD=$(/permaroot/usr/bin/node generate-passwd.sh)
+PASSWD=$(/usr/bin/node generate-passwd.sh)
 
 aws ec2 create-tags --resources $INSTANCE_ID --tags "Key=Password,Value=$PASSWD" --region $REGION
 yes $PASSWD | passwd ubuntu
