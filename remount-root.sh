@@ -28,7 +28,19 @@ mount $DEVICE $NEWMNT
 #   cp client.ovpn $NEWMNT/home/ubuntu/
 # fi
 cp /etc/hostname $NEWMNT/etc/hostname
+
+ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
+REGION=${ZONE::-1}
+INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+PASSWD=$(/usr/bin/node generate-passwd.sh)
+
+aws ec2 create-tags --resources $INSTANCE_ID --tags "Key=Password,Value=$PASSWD" --region $REGION
+yes $PASSWD | passwd ubuntu
+cp /etc/shadow /permaroot/etc/shadow
+history -c
+
 mkdir -p $NEWMNT/$OLDMNT
+
 umount $DEVICE
 
 #
@@ -55,4 +67,4 @@ EOF
 
 chmod +x /sbin/init
 
-bash wait-cloud-init-finish.sh $(curl http://169.254.169.254/latest/meta-data/instance-id) &
+bash wait-cloud-init-finish.sh &&  reboot  &
