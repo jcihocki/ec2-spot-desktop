@@ -6,6 +6,10 @@ else
 fi
 
 apt install -y nodejs
+apt-get install -y python-pip python-setuptools
+apt-get install -y aws-api-tools
+pip install awscli
+
 
 DEVICE=/dev/$(ls -l /dev/disk/by-label|grep permaroot|cut -d / -f 3)
 DEVICE_UUID=$(blkid -o value -s UUID $DEVICE)
