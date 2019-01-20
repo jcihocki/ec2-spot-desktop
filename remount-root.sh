@@ -35,6 +35,7 @@ mount $DEVICE $NEWMNT
 #   cp client.ovpn $NEWMNT/home/ubuntu/
 # fi
 cp /etc/hostname $NEWMNT/etc/hostname
+cp /dev/null /permaroot/home/ubuntu/.ssh/authorized_keys
 
 ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
 REGION=${ZONE::-1}
