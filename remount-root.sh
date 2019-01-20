@@ -32,7 +32,7 @@ cp /etc/hostname $NEWMNT/etc/hostname
 ZONE=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone)
 REGION=${ZONE::-1}
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
-PASSWD=$(/usr/bin/node generate-passwd.sh)
+PASSWD=$(/permaroot/usr/bin/node generate-passwd.sh)
 
 aws ec2 create-tags --resources $INSTANCE_ID --tags "Key=Password,Value=$PASSWD" --region $REGION
 yes $PASSWD | passwd ubuntu
