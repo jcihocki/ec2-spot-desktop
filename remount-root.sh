@@ -5,6 +5,7 @@ else
 	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot" 
 fi
 
+apt update
 apt install -y nodejs
 apt-get install -y python-pip python-setuptools
 apt-get install -y aws-api-tools
