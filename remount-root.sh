@@ -10,11 +10,11 @@ if [ $ROOT_LABEL == "permaroot" ]; then
 		cd openvpn-server-conf
 		bash server-setup.sh
 
-		cp client.ovpn $NEWMNT/home/ubuntu/
+		cp /root/client.ovpn /home/ubuntu/
 		cd ..
 	fi
 
-	bash wait-cloud-init-finish.sh $(curl http://169.254.169.254/latest/meta-data/instance-id) $(cat /home/ubuntu/client.ovpn)
+	bash wait-cloud-init-finish.sh $(curl http://169.254.169.254/latest/meta-data/instance-id) $(cat /root/client.ovpn)
 	exit 0
 else
 	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot"
