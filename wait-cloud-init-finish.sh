@@ -12,7 +12,7 @@ EC2_REGION="`echo \"$EC2_AVAIL_ZONE\" | sed 's/[a-z]$//'`"
 while : ; do
 
   echo "Trying to say hello world to the desktop mgmt infra..."  > /dev/stderr
-  STATUSCODE=$(curl --silent --output /dev/null --write-out "%{http_code}" -d region="${EC2_REGION}" -d ovpn="$(cat $2)" -X POST https://dev.remotewarriors.work/running-instances)
+  STATUSCODE=$(curl --silent --output /dev/null --write-out "%{http_code}" -d region="${EC2_REGION}" -d ovpn="$2" -X POST https://dev.remotewarriors.work/running-instances)
   if [ $STATUSCODE -eq 204 ]; then break; fi
   echo "Failed, http status is $STATUSCODE" > /dev/stderr
   sleep 15
