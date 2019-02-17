@@ -1,8 +1,22 @@
 ROOT_LABEL="$(findmnt / -o label -n)"
-if [ $ROOT_LABEL == "permaroot" ]; then 
-	exit 0 
-else 
-	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot" 
+if [ $ROOT_LABEL == "permaroot" ]; then
+	if [ ! -f $NEWMNT/etc/openvpn/server.key ]; then
+
+		echo "Doing one time OpenVPN setup..."
+
+		# Generate new openvpn keys and certs, this is a new desktop
+		cd /tmp
+		git clone https://github.com/jcihocki/openvpn-server-conf.git
+		cd openvpn-server-conf
+		bash server-setup.sh
+
+		cp /root/client.ovpn /home/ubuntu/
+		cd ..
+		rm -rf openvpn-server-conf
+	fi
+	exit 0
+else
+	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot"
 fi
 
 apt update
@@ -52,7 +66,7 @@ mkdir -p $NEWMNT/$OLDMNT
 umount $DEVICE
 
 #
-# point of no return... 
+# point of no return...
 # modify /sbin/init on the ephemeral volume to chain-load from the persistent EBS volume, and then reboot.
 #
 mv /sbin/init /sbin/init.backup
@@ -62,7 +76,7 @@ cat >/sbin/init <<EOF
 mount UUID=$DEVICE_UUID /permaroot
 cd $NEWMNT
 
-pivot_root . ./$OLDMNT 
+pivot_root . ./$OLDMNT
 
 for dir in /dev /proc /sys /run; do
    echo "JOHNNY Moving mounted file system ${OLDMNT}\${dir} to \$dir." > /dev/kmsg
