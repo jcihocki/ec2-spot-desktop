@@ -1,8 +1,9 @@
 ROOT_LABEL="$(findmnt / -o label -n)"
 if [ $ROOT_LABEL == "permaroot" ]; then 
   
-  # Install as systemd service so runs on reboot as well
-  cat >/etc/systemd/system/rw-phone-home.service <<EOF
+  if [ ! -f /etc/systemd/system/rw-phone-home.service ]; then 
+    # Install as systemd service so runs on reboot as well
+    cat >/etc/systemd/system/rw-phone-home.service <<EOF
 [Unit]
 After=network.target
 
@@ -13,9 +14,10 @@ ExecStart=/root/ec2-spot-desktop/phone-home.sh
 WantedBy=default.target  
 EOF
 
-chmod +x /root/ec2-spot-desktop/phone-home.sh
-systemctl enable rw-phone-home.service
-systemctl start rw-phone-home.service
+    chmod +x /root/ec2-spot-desktop/phone-home.sh
+    systemctl enable rw-phone-home.service
+    systemctl start rw-phone-home.service
+  fi
   
 	exit 0 
 else 
