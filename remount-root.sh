@@ -1,5 +1,22 @@
 ROOT_LABEL="$(findmnt / -o label -n)"
 if [ $ROOT_LABEL == "permaroot" ]; then 
+  
+  # Install as systemd service so runs on reboot as well
+  cat >/etc/systemd/system/rw-phone-home.service <<EOF
+[Unit]
+After=network.target
+
+[Service]
+ExecStart=/root/ec2-spot-desktop/phone-home.sh
+
+[Install]
+WantedBy=default.target  
+EOF
+
+chmod +x /root/ec2-spot-desktop/phone-home.sh
+systemctl enable rw-phone-home.service
+systemctl start rw-phone-home.service
+  
 	exit 0 
 else 
 	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot" 
@@ -55,4 +72,4 @@ EOF
 
 chmod +x /sbin/init
 
-bash wait-cloud-init-finish.sh $(curl http://169.254.169.254/latest/meta-data/instance-id) &
+nohup bash -c "sleep 10 && reboot" &
