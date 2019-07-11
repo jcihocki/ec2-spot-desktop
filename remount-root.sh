@@ -8,13 +8,13 @@ if [ $ROOT_LABEL == "permaroot" ]; then
 After=network.target
 
 [Service]
-ExecStart=/root/ec2-spot-desktop/phone-home.sh
+ExecStart=/etc/cloud/ec2-spot-desktop/phone-home.sh
 
 [Install]
 WantedBy=default.target  
 EOF
 
-    chmod +x /root/ec2-spot-desktop/phone-home.sh
+    chmod +x /etc/cloud/ec2-spot-desktop/phone-home.sh
     systemctl enable rw-phone-home.service
     systemctl start rw-phone-home.service
   fi
