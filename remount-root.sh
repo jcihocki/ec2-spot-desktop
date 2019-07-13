@@ -1,4 +1,5 @@
 ROOT_LABEL="$(findmnt / -o label -n)"
+export DEBIAN_FRONTEND=noninteractive
 if [ $ROOT_LABEL == "permaroot" ]; then
 	if [ ! -f $NEWMNT/etc/openvpn/server.key ]; then
 
@@ -19,7 +20,6 @@ else
 	echo "Root label is $ROOT_LABEL which means we need to set up and reboot for chroot"
 fi
 
-export DEBIAN_FRONTEND=noninteractive
 apt update
 apt install -yq nodejs
 apt-get install -yq python-pip python-setuptools
