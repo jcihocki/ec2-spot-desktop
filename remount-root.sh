@@ -21,9 +21,9 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 apt update
-apt install -y nodejs
-apt-get install -y python-pip python-setuptools
-apt-get install -y aws-api-tools
+apt install -yq nodejs
+apt-get install -yq python-pip python-setuptools
+apt-get install -yq aws-api-tools
 pip install awscli
 
 
