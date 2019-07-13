@@ -1,3 +1,4 @@
+export DEBIAN_FRONTEND=noninteractive
 ROOT_LABEL="$(findmnt / -o label -n)"
 if [ $ROOT_LABEL == "permaroot" ]; then 
   
